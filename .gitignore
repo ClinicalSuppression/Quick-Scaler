@@ -10,3 +10,6 @@ artifacts/
 *.sln.docstates
 *.tmp
 WindowsQuickScaler_Setup_*.exe
+Output/
+TestResults/
+*.log

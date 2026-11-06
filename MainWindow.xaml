@@ -1,61 +1,107 @@
 <Window x:Class="WindowsQuickScaler.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Windows Quick Scaler" Height="560" Width="900" MinHeight="500" MinWidth="800"
-        WindowStartupLocation="CenterScreen" Background="#F4F4F4"
+        Title="Windows Quick Scaler" Height="640" Width="980" MinHeight="540" MinWidth="840"
+        WindowStartupLocation="CenterScreen" Background="#F4F4F4" FontSize="13"
         Closing="Window_Closing">
-    <Grid Margin="15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="330"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- Left Panel: Presets & Settings -->
-        <StackPanel Grid.Column="0" Margin="0,0,15,0">
-            <TextBlock Text="Scaling Presets" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <TextBlock Text="Choose the scale and selected monitor cards, then save a preset."
-                       FontSize="11" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,8"/>
-            <ListBox x:Name="PresetsListBox" Height="190" Margin="0,0,0,10"/>
-
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                <Button Content="Apply Selected" Width="105" Click="BtnApply_Click" Background="#007ACC" Foreground="White" Margin="0,0,5,0"/>
-                <Button Content="Save Preset" Width="95" Click="BtnAddPreset_Click" Margin="0,0,5,0"/>
-                <Button Content="Delete" Width="80" Click="BtnDeletePreset_Click"/>
-            </StackPanel>
-
-            <Separator Margin="0,5,0,15"/>
-
-            <CheckBox x:Name="ChkMinimizeToTray" Content="Minimize to tray on close (Default: On)" IsChecked="True" Margin="0,0,0,8"/>
-            <CheckBox x:Name="ChkStartup" Content="Run app automatically with Windows" Checked="ChkStartup_Changed" Unchecked="ChkStartup_Changed"/>
-        </StackPanel>
-
-        <!-- Right Panel: Interactive Display Layout Canvas -->
-        <Border Grid.Column="1" Background="White" BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="8" Padding="15">
+    <DockPanel Margin="12">
+        <!-- Status bar -->
+        <Border DockPanel.Dock="Top" Background="#1F4E79" CornerRadius="6" Padding="12,8" Margin="0,0,0,10">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Text="Display Layout &amp; Selection" FontSize="16" FontWeight="Bold"/>
-                <TextBlock Text="Click individual monitor cards to toggle target selection:" FontSize="11" Foreground="Gray" Grid.Row="0" Margin="0,22,0,0"/>
-
-                <!-- Dynamic Visual Monitor Canvas Map -->
-                <Canvas x:Name="MonitorCanvas" Grid.Row="1" Background="#FAFAFA" Margin="0,10,0,10" ClipToBounds="True"/>
-
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Text="Target Scale:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
-                    <ComboBox x:Name="CmbScaleTarget" Width="90" SelectedIndex="0" Margin="0,0,10,0">
-                        <ComboBoxItem Content="100%"/>
-                        <ComboBoxItem Content="125%"/>
-                        <ComboBoxItem Content="150%"/>
-                        <ComboBoxItem Content="175%"/>
-                        <ComboBoxItem Content="200%"/>
-                    </ComboBox>
-                    <Button Content="Select All" Click="BtnSelectAll_Click" Padding="10,4"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusText" Text="Loading displays…" Foreground="White" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="SignOutHint" Text="Note: Windows may need a sign-out for a new scale to take effect." Foreground="#BFD9F2" FontSize="11" Margin="0,3,0,0"/>
+                </StackPanel>
+                <StackPanel x:Name="RevertPanel" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Collapsed">
+                    <TextBlock x:Name="RevertCountdownText" Text="Reverting in 15s…" Foreground="White" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Button x:Name="BtnRevert" Content="Revert" MinWidth="84" MinHeight="36" Click="BtnRevert_Click" Background="#D83B01" Foreground="White" Margin="0,0,6,0"/>
+                    <Button x:Name="BtnKeep" Content="Keep" MinWidth="84" MinHeight="36" Click="BtnKeep_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
-    </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="340"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel: Presets & Settings -->
+            <ScrollViewer Grid.Column="0" Margin="0,0,12,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Button x:Name="BtnDesk" Content="🖥 Desk — 125%" MinHeight="48" FontSize="16" FontWeight="Bold" Click="BtnDesk_Click" Background="#007ACC" Foreground="White" Margin="0,0,0,6"/>
+                    <Button x:Name="BtnCouch" Content="🛋 Couch — 200%" MinHeight="48" FontSize="16" FontWeight="Bold" Click="BtnCouch_Click" Background="#005A9E" Foreground="White" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Scaling Presets" FontSize="16" FontWeight="Bold" Margin="0,0,0,6"/>
+                    <TextBlock Text="Double-click a preset (or press Enter) to apply it. Type a name to save your own, e.g. “Couch Night”." FontSize="11" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                    <TextBox x:Name="PresetNameTextBox" Height="30" Margin="0,0,0,6" ToolTip="Optional custom name for the preset you save next"/>
+                    <ListBox x:Name="PresetsListBox" MinHeight="130" MaxHeight="220" Margin="0,0,0,8" SelectionChanged="PresetsListBox_SelectionChanged" KeyDown="PresetsListBox_KeyDown"/>
+
+                    <WrapPanel Margin="0,0,0,6">
+                        <Button x:Name="BtnApplyPreset" Content="Apply Preset" MinWidth="100" MinHeight="34" Click="BtnApplyPreset_Click" Background="#007ACC" Foreground="White" Margin="0,0,5,5"/>
+                        <Button x:Name="BtnAddPreset" Content="Save Preset" MinWidth="100" MinHeight="34" Click="BtnAddPreset_Click" Margin="0,0,5,5"/>
+                        <Button Content="Rename" MinWidth="80" MinHeight="34" Click="BtnRenamePreset_Click" Margin="0,0,5,5"/>
+                        <Button Content="Delete" MinWidth="80" MinHeight="34" Click="BtnDeletePreset_Click" Margin="0,0,5,5"/>
+                        <Button Content="Pin as Desk" MinWidth="100" MinHeight="34" Click="BtnPinDesk_Click" Margin="0,0,5,5"/>
+                        <Button Content="Pin as Couch" MinWidth="100" MinHeight="34" Click="BtnPinCouch_Click" Margin="0,0,5,5"/>
+                    </WrapPanel>
+
+                    <Separator Margin="0,4,0,10"/>
+
+                    <TextBlock Text="Settings" FontSize="14" FontWeight="Bold" Margin="0,0,0,6"/>
+                    <CheckBox x:Name="ChkMinimizeToTray" Content="Minimize to tray on close" IsChecked="True" Margin="0,0,0,6" ToolTip="Closing the window hides it in the tray instead of quitting"/>
+                    <CheckBox x:Name="ChkStartup" Content="Run automatically with Windows (minimized)" Margin="0,0,0,6" Checked="ChkStartup_Changed" Unchecked="ChkStartup_Changed" ToolTip="Registers this app in your startup apps"/>
+                    <CheckBox x:Name="ChkHotkeys" Content="Enable hotkeys (Ctrl+Alt+D / C / ↑ / ↓)" IsChecked="True" Margin="0,0,0,6" Checked="ChkHotkeys_Changed" Unchecked="ChkHotkeys_Changed"/>
+                    <CheckBox x:Name="ChkAutoApply" Content="Auto-apply preset when displays change" Margin="0,0,0,6" Checked="ChkAutoApply_Changed" Unchecked="ChkAutoApply_Changed" ToolTip="When a display is added/removed, apply the preset selected below"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
+                        <TextBlock Text="Auto-apply:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ComboBox x:Name="CmbAutoApplyPreset" Width="200" SelectionChanged="CmbAutoApplyPreset_SelectionChanged"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,8,0,10"/>
+                    <TextBlock Text="Per-app profiles" FontSize="14" FontWeight="Bold" Margin="0,0,0,6"/>
+                    <TextBlock Text="When this program becomes the foreground app, auto-apply the selected preset. Type e.g. game.exe, select its preset above, then Add." FontSize="11" Foreground="Gray" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <TextBox x:Name="ProfileProcessTextBox" Width="170" Height="28" Margin="0,0,6,0" ToolTip="Process file name, e.g. game.exe"/>
+                        <Button Content="Add" MinWidth="70" MinHeight="30" Click="BtnAddProfile_Click"/>
+                    </StackPanel>
+                    <ListBox x:Name="ProfilesListBox" MinHeight="60" MaxHeight="120" Margin="0,0,0,6"/>
+                    <Button Content="Remove selected profile" MinHeight="30" Click="BtnRemoveProfile_Click" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Right Panel: Interactive Display Layout Canvas -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="8" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Display Layout &amp; Selection" FontSize="16" FontWeight="Bold"/>
+                        <TextBlock Text="Click a card (or press Space when focused) to toggle it. Double-click a card to apply the scale below to that display only." FontSize="11" Foreground="Gray" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" Margin="0,10,0,10" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <Canvas x:Name="MonitorCanvas" Background="#FAFAFA" MinWidth="300" MinHeight="180"/>
+                    </ScrollViewer>
+
+                    <WrapPanel Grid.Row="2" HorizontalAlignment="Right">
+                        <TextBlock Text="Target Scale:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold"/>
+                        <ComboBox x:Name="CmbScaleTarget" Width="110" MinHeight="32" Margin="0,0,8,0"/>
+                        <Button x:Name="BtnApplyScale" Content="Apply to Selected" MinHeight="34" Click="BtnApplyScale_Click" Background="#007ACC" Foreground="White" Margin="0,0,8,0" Padding="10,4"/>
+                        <Button Content="Select All" MinHeight="34" Click="BtnSelectAll_Click" Padding="10,4" Margin="0,0,5,0"/>
+                        <Button Content="Select None" MinHeight="34" Click="BtnSelectNone_Click" Padding="10,4"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>

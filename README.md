@@ -1,62 +1,90 @@
 # Windows Quick Scaler
 
-Windows Quick Scaler is a small Windows desktop utility for changing display scaling and quickly applying saved scaling presets from either its dashboard or the notification-area (system tray) icon.
+Windows Quick Scaler is a small Windows desktop utility for changing display scaling and quickly applying saved scaling presets from its dashboard, the notification-area (system tray) icon, hotkeys, or the command line — built for switching between a desk and a couch ~10 feet away.
 
-**Current version: 0.9**
+**Current version: 1.1**
 
 ## Features
 
-- Detects connected displays and shows their relative layout in the dashboard.
-- Lets you select one or more displays by clicking their cards.
-- Applies a scale to the selected displays.
-- Saves named-in-the-UI presets containing a scale and either all displays or the selected display devices.
-- Persists presets between launches in `%LOCALAPPDATA%\WindowsQuickScaler\presets.json`.
-- Adds the same saved presets to the tray icon's right-click menu.
-- Includes a default **100% — All monitors** preset when run for the first time.
-- Can minimize to the system tray when the dashboard is closed.
-- Can optionally add or remove itself from the current user's Windows startup apps.
+- Shows each connected display's friendly name, native resolution, and **current scale**, with a relative layout map you can click (or use the keyboard on) to select targets.
+- One-click **Desk** and **Couch** mode buttons (pin any preset to either), plus per-display and all-display scaling from 100% to 500%.
+- **Revert safety net:** after applying, you get 15 seconds to revert to the previous scales — in the dashboard or via a notification popup when the window is hidden.
+- Named presets you create yourself (e.g. "Couch Night"), with rename, delete (with confirmation), and duplicate-name protection. Presets persist in `%LOCALAPPDATA%\WindowsQuickScaler\presets.json` (versioned format, with `presets.json.bak` recovery if the file is corrupted; older plain-array files still load).
+- Same presets in the **tray icon** right-click menu; double-click the tray icon to reopen the dashboard.
+- **Hotkeys** (toggleable): `Ctrl+Alt+D` Desk, `Ctrl+Alt+C` Couch, `Ctrl+Alt+↑/↓` step the scale.
+- **Command line:** `--preset`, `--scale`, `--desk`, `--couch`, `--tray`, `--export`/`--import` (see `--help`).
+- **Auto-apply:** optionally apply a preset when displays are added/removed, and per-app profiles (e.g. `game.exe` → "Couch" preset) based on the foreground program.
+- Detects display changes (plug in a TV, change resolution) and refreshes automatically; runs from Windows startup minimized to the tray if you enable it.
+- First-run wizard that offers Desk (125%) / Couch (200%) presets, hotkeys, and startup registration.
+- Single-instance guard, per-monitor DPI awareness (PerMonitorV2), and an error log at `%LOCALAPPDATA%\WindowsQuickScaler\app.log`.
+- First-run default **100% — All monitors** preset when no presets exist yet.
 
 ## Requirements
 
 - Windows 10 or later with active displays.
-- .NET 8 Desktop Runtime.
+- For the framework-dependent build: the **.NET 8 Desktop Runtime** (x64). The self-contained publish profile (below) needs no runtime.
 - Inno Setup 6 to compile the installer.
-- The app does not require administrator privileges for per-user presets or startup registration. Windows or a graphics driver may impose its own limitations on available scaling settings.
+- The app does not require administrator privileges. Windows or a graphics driver may impose its own limitations on available scaling settings.
 
 ## Use
 
-1. Launch Windows Quick Scaler.
-2. Select the scale percentage from **Target Scale**.
-3. Click the monitor cards to choose which displays should be affected. The blue cards are selected.
-4. Use **Apply Selected** to apply the chosen scale now, or **Save Preset** to save the scale and selected displays for later.
-5. Select a saved preset and use **Apply Selected**, or right-click the tray icon and select a preset there.
+1. Launch Windows Quick Scaler (or press `Ctrl+Alt+D` / `Ctrl+Alt+C`).
+2. The status bar shows the current scale of every display. Click monitor cards to choose targets (they default to selected).
+3. Pick a **Target Scale** (pre-selected from the current scale), then **Apply to Selected** — or double-click a card to apply to that display only.
+4. To save a preset, optionally type a name (e.g. "Couch Night") and click **Save Preset**; double-clicking a preset in the list applies it, as does right-clicking the tray icon.
+5. Pin a preset with **Pin as Desk** / **Pin as Couch** so the big buttons (and hotkeys) use it.
+6. After applying, use **Revert** within 15 seconds to undo, or **Keep** to confirm.
 
-The tray menu and dashboard use the same saved preset collection. Preset names are generated from their scale and target displays. The default all-monitor preset applies to all displays connected when it is used. A preset targeting specific displays applies to the matching connected displays and reports any saved targets that are disconnected.
+Scaling in Windows normally requires a sign-out to take visual effect; the app says so in the status bar. If a preset targets a disconnected display, it applies to the connected matches and reports the missing ones.
 
-Scaling availability varies by display and graphics driver. If a change is not reflected immediately, sign out of Windows and sign back in.
+### Command line
+
+```text
+WindowsQuickScaler.exe                  open the dashboard
+WindowsQuickScaler.exe --tray           start minimized to the tray
+WindowsQuickScaler.exe --desk           apply the Desk preset (or 125% on all)
+WindowsQuickScaler.exe --couch          apply the Couch preset (or 200% on all)
+WindowsQuickScaler.exe --preset "Couch Night"
+WindowsQuickScaler.exe --scale 200 --all
+WindowsQuickScaler.exe --scale 200 --monitor 1,2     (1-based monitor numbers)
+WindowsQuickScaler.exe --scale 150 --device "\\.\DISPLAY1"
+WindowsQuickScaler.exe --preset "Desk" --exit         apply, then exit
+WindowsQuickScaler.exe --export presets.json
+WindowsQuickScaler.exe --import presets.json
+WindowsQuickScaler.exe --help
+```
+
+### Settings and data files (all in `%LOCALAPPDATA%\WindowsQuickScaler\`)
+
+| File | Contents |
+| --- | --- |
+| `presets.json` | Your presets (versioned; `presets.json.bak` is the previous good copy) |
+| `settings.json` | Tray/startup/hotkey preferences, Desk/Couch pins, auto-apply and per-app profiles |
+| `app.log` | Unhandled-error log (safe to delete) |
+
+Back up `presets.json` to preserve or transfer presets, or use `--export`/`--import`.
 
 ## Build from source
 
-Open a PowerShell terminal in the project directory and run:
+Open a PowerShell terminal in the project directory:
 
 ```powershell
-dotnet restore .\WindowsQuickScaler.csproj
-dotnet build .\WindowsQuickScaler.csproj -c Release -warnaserror
+dotnet restore .\WindowsQuickScaler.slnx
+dotnet build .\WindowsQuickScaler.slnx -c Release -warnaserror
+dotnet run --project .\WindowsQuickScaler.Tests\WindowsQuickScaler.Tests.csproj -c Release
 ```
 
-Publish a Windows x64 build:
+Publish a Windows x64 build (framework-dependent; needs the .NET 8 Desktop Runtime):
 
 ```powershell
-dotnet publish .\WindowsQuickScaler.csproj -c Release -r win-x64 -warnaserror
+dotnet publish .\WindowsQuickScaler.csproj -c Release -r win-x64 --self-contained false -warnaserror
 ```
 
-The published application is written to:
+Or publish a **self-contained single-file** build that needs no runtime, using the included publish profile:
 
-```text
-bin\Release\net8.0-windows\win-x64\publish\
+```powershell
+dotnet publish .\WindowsQuickScaler.csproj -p:PublishProfile=win-x64-selfcontained -warnaserror
 ```
-
-The publish is framework-dependent; install the .NET 8 Desktop Runtime on a machine that does not already have it.
 
 ## Build the installer
 
@@ -66,26 +94,35 @@ After publishing, compile `installer.iss` with Inno Setup 6:
 & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" .\installer.iss
 ```
 
-The installer script packages the x64 publish output and uses the app icon from `Assets\WindowsQuickScaler.ico`. The installer output is `WindowsQuickScaler_Setup_0.9.exe` in the project directory.
+The installer packages the x64 publish output, uses the app icon from `Assets\WindowsQuickScaler.ico`, warns if the .NET 8 Desktop Runtime is missing, and writes `WindowsQuickScaler_Setup_1.1.exe` to `Output\` in the project directory. Upgrades replace the existing installation in place (single Add/Remove entry).
 
 ## Project layout
 
 | File | Purpose |
 | --- | --- |
-| `App.xaml`, `App.xaml.cs` | WPF application entry point. |
-| `MainWindow.xaml`, `MainWindow.xaml.cs` | Dashboard, display selection, tray icon and menu, and startup registration. |
-| `ScaleManager.cs` | Windows Display Configuration interop for resolving displays and setting their scale. |
-| `PresetStore.cs` | Preset model, validation, and per-user JSON persistence. |
+| `App.xaml`, `App.xaml.cs` | WPF entry point, single-instance guard, global error handling, `--help`. |
+| `MainWindow.xaml`, `MainWindow.xaml.cs` | Dashboard, display selection, Desk/Couch modes, revert flow, tray menu, hotkeys, startup registration, CLI handling, auto-apply, per-app profiles, first-run wizard trigger. |
+| `ScaleManager.cs` | Windows Display Configuration interop: current scale, range, friendly names, native size, and setting scale. |
+| `PresetStore.cs` | Preset model, validation, versioned atomic persistence with `.bak` recovery, export/import. |
+| `AppSettings.cs` | Preferences model and atomic `settings.json` persistence. |
+| `CliArgs.cs` | Testable command-line parser. |
+| `TrayMenuBuilder.cs` | Pure tray-menu ordering logic. |
+| `NotificationPopup.cs` | Focus-stealing-free notification with an action button (Revert). |
+| `PromptDialog.cs` | Rename dialog and first-run wizard window. |
+| `app.manifest` | asInvoker trust level and Windows 10/11 compatibility (DPI mode is set via `ApplicationHighDpiMode`). |
+| `WindowsQuickScaler.Tests\` | Dependency-free test harness (45 checks) covering validation, persistence, CLI parsing, and tray ordering. |
+| `.github\workflows\build.yml` | CI: restore, build with `-warnaserror`, run tests, publish. |
 | `Assets\WindowsQuickScaler.ico` | Multi-resolution application, tray, shortcut, and installer icon. |
 | `installer.iss` | Inno Setup installer definition. |
 
 ## Data and troubleshooting
 
-- Presets are stored in `%LOCALAPPDATA%\WindowsQuickScaler\presets.json`. Back up this file to preserve or transfer your presets.
-- If a preset file is invalid or cannot be read or saved, the app displays an error instead of silently replacing the saved presets.
+- If a preset file is invalid, the app tries the `.bak` copy and tells you; the corrupt file is left unchanged until you save a preset.
 - If a preset targets a monitor that is disconnected, the app applies it to matching connected displays and reports the missing target.
-- If Windows rejects a scale change, the app reports the display-specific error. The supported scale range depends on each display.
+- If Windows rejects a scale change, the app reports the display-specific error. The supported range depends on each display; scales of 350%+ ask for confirmation first.
 - If the tray icon is hidden, open Windows **Settings → Personalization → Taskbar → Other system tray icons** and enable Windows Quick Scaler.
+- If a hotkey doesn't work, another app may already use that combination; the app registers Desk/Couch/step hotkeys independently and reports conflicts in the status bar.
+- If an extreme scale leaves the screen hard to read, use the 15-second **Revert** (or sign out/in as a last resort).
 
 ## License
 
