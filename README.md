@@ -2,7 +2,7 @@
 
 <img align="right" src="Assets/QuickScaler-icon-preview.png" alt="Quick Scaler icon" width="96">
 
-> **Renamed in 1.2:** this app was previously released as **Windows Quick Scaler**. As of 1.2 it is simply **Quick Scaler** (`QuickScaler.exe`, repo `ClinicalSuppression/QuickScaler`). First launch migrates `%LOCALAPPDATA%\WindowsQuickScaler` to `%LOCALAPPDATA%\QuickScaler` and rewrites the startup registry entry.
+> **Renamed in 1.2:** this app was previously released as **Windows Quick Scaler**. As of 1.2 it is simply **Quick Scaler** (`QuickScaler.exe`, repo `ClinicalSuppression/QuickScaler`). First launch migrates `%LOCALAPPDATA%\WindowsQuickScaler` to `%LOCALAPPDATA%\QuickScaler` (moves the folder, or merges any missing files — existing 1.2 files are never overwritten) and rewrites the startup registry entry.
 
 Quick Scaler is a small Windows desktop utility for changing display scaling and quickly applying saved scaling presets from its dashboard, the notification-area (system tray) icon, hotkeys, or the command line — built for switching between a desk and a couch ~10 feet away.
 
@@ -105,6 +105,7 @@ The installer packages the x64 publish output, uses the app icon from `Assets\Qu
 | File | Purpose |
 | --- | --- |
 | `App.xaml`, `App.xaml.cs` | WPF entry point, single-instance guard, global error handling, `--help`. |
+| `AppPaths.cs` | First-run migration from the pre-rename `WindowsQuickScaler` names: `%LOCALAPPDATA%` folder move/merge (missing files only) and the legacy startup-registry Run key rewrite. |
 | `MainWindow.xaml`, `MainWindow.xaml.cs` | Dashboard, display selection, Desk/Couch modes, revert flow, tray menu, hotkeys, startup registration, CLI handling, auto-apply, per-app profiles, first-run wizard trigger. |
 | `ScaleManager.cs` | Windows Display Configuration interop: current scale, range, friendly names, native size, and setting scale. |
 | `PresetStore.cs` | Preset model, validation, versioned atomic persistence with `.bak` recovery, export/import. |

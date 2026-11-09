@@ -1,4 +1,4 @@
-"""Generate WindowsQuickScaler / Crispy_Bills / Dupe_Check icon options (pure Pillow).
+"""Generate QuickScaler (formerly WindowsQuickScaler) / Crispy_Bills / Dupe_Check icon options (pure Pillow).
 
 House style (matches SystemInfo docs/icon.png):
   - full-bleed rounded-square squircle, deep navy vertical gradient
@@ -98,21 +98,21 @@ def compose(name, glyph_img):
               sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     print("wrote", png)
 
-# ---------------- WindowsQuickScaler ----------------
+# ---------------- QuickScaler ----------------
 # Option 1: monitor with knocked-out diagonal scaling double arrow
 g = glyph_canvas(); d = ImageDraw.Draw(g)
 rr(d, [232, 212, 792, 564], 40, fill=GLYPH)
 d.rectangle([472, 564, 552, 616], fill=GLYPH)
 rr(d, [372, 616, 652, 646], 15, fill=GLYPH)
 double_arrow(d, 335, 476, 689, 272, KNOCK, 46, 80, 45)
-compose("WindowsQuickScaler/option1-monitor-scale", g)
+compose("QuickScaler/option1-monitor-scale", g)
 
 # Option 2: oversized percent sign whose slash IS a double-headed arrow
 g = glyph_canvas(); d = ImageDraw.Draw(g)
 d.ellipse([392 - 74, 330 - 74, 392 + 74, 330 + 74], fill=GLYPH)
 d.ellipse([632 - 74, 570 - 74, 632 + 74, 570 + 74], fill=GLYPH)
 double_arrow(d, 300, 612, 726, 268, GLYPH, 52, 102, 56)
-compose("WindowsQuickScaler/option2-percent-arrow", g)
+compose("QuickScaler/option2-percent-arrow", g)
 
 # Option 3: WQ monogram + small diagonal double arrow
 g = glyph_canvas(); d = ImageDraw.Draw(g)
@@ -122,7 +122,7 @@ except OSError:
     font = ImageFont.truetype(os.path.join(FOUNDRY, "arialbd.ttf"), 265)
 d.text((432, 330), "WQ", font=font, fill=GLYPH, anchor="mm")
 double_arrow(d, 700, 452, 862, 330, GLYPH, 30, 56, 32)
-compose("WindowsQuickScaler/option3-wq-arrow", g)
+compose("QuickScaler/option3-wq-arrow", g)
 
 # ---------------- Crispy_Bills ----------------
 # Option 1: stack of three bill notes, coin knocked out of the top one
@@ -183,8 +183,8 @@ rr(d, [452, 438, 652, 484], 23, fill=TEAL)
 compose("Dupe_Check/option3-pages-minus", g)
 
 # ---------------- contact sheet ----------------
-names = ["WindowsQuickScaler/option1-monitor-scale", "WindowsQuickScaler/option2-percent-arrow",
-         "WindowsQuickScaler/option3-wq-arrow", "Crispy_Bills/option1-bill-stack",
+names = ["QuickScaler/option1-monitor-scale", "QuickScaler/option2-percent-arrow",
+         "QuickScaler/option3-wq-arrow", "Crispy_Bills/option1-bill-stack",
          "Crispy_Bills/option2-receipt-check", "Crispy_Bills/option3-calendar-coin",
          "Dupe_Check/option1-duplicate-strike", "Dupe_Check/option2-magnifier-dupes",
          "Dupe_Check/option3-pages-minus"]

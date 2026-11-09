@@ -19,7 +19,11 @@ namespace QuickScaler
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             AppFolderName);
 
-        /// <summary>Move %LOCALAPPDATA%\WindowsQuickScaler to %LOCALAPPDATA%\QuickScaler (rooted move keeps presets/settings/log).</summary>
+        /// <summary>
+        /// Migrate %LOCALAPPDATA%\WindowsQuickScaler to %LOCALAPPDATA%\QuickScaler.
+        /// If only the legacy folder exists it is moved; if both exist, any files missing
+        /// from the current folder are moved out of the legacy one (never overwritten).
+        /// </summary>
         internal static void MigrateLegacyDataDirectory()
         {
             try
@@ -28,7 +32,34 @@ namespace QuickScaler
                 string legacy = Path.Combine(local, LegacyFolderName);
                 string current = Path.Combine(local, AppFolderName);
                 if (Directory.Exists(legacy) && !Directory.Exists(current))
+                {
                     Directory.Move(legacy, current);
+                    return;
+                }
+                if (!Directory.Exists(legacy))
+                    return;
+
+                Directory.CreateDirectory(current);
+                foreach (string legacyFile in Directory.GetFiles(legacy, "*", SearchOption.AllDirectories))
+                {
+                    string relative = Path.GetRelativePath(legacy, legacyFile);
+                    string destination = Path.Combine(current, relative);
+                    if (File.Exists(destination))
+                        continue; // never clobber current data
+                    Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+                    File.Move(legacyFile, destination);
+                }
+                // Remove the legacy folder only if it is empty now.
+                try
+                {
+                    if (!Directory.EnumerateFiles(legacy, "*", SearchOption.AllDirectories).Any()
+                        && !Directory.EnumerateDirectories(legacy, "*", SearchOption.AllDirectories).Any())
+                        Directory.Delete(legacy, recursive: true);
+                }
+                catch
+                {
+                    // Non-fatal: leftover legacy folder can stay.
+                }
             }
             catch (Exception exception)
             {
