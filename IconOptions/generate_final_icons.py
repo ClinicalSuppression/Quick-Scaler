@@ -136,6 +136,19 @@ for y, w in ((560, 300), (660, 246), (760, 246)):
 rounded_line(d, 392, 800, 632, 722, TEAL, 26)
 compose("Dupe_Check", "Dupe_Check", g)
 
+# ---------- glyph-only transparent splash for Crispy_Bills (Android/iOS splash) ----------
+g = glyph_layer(); d = ImageDraw.Draw(g)
+monogram(d, "CB", 512, 380, 330)
+d.rounded_rectangle([282, 630, 742, 852], radius=34, fill=GLYPH)
+d.ellipse([512 - 76, 741 - 76, 512 + 76, 741 + 76], fill=KNOCK)
+d.ellipse([512 - 46, 741 - 46, 512 + 46, 741 + 46], fill=TEAL)
+d.ellipse([282 - 26, 741 - 26, 282 + 26, 741 + 26], fill=KNOCK)
+d.ellipse([742 - 26, 741 - 26, 742 + 26, 741 + 26], fill=KNOCK)
+splash_folder = os.path.join(OUT, "Crispy_Bills")
+os.makedirs(splash_folder, exist_ok=True)
+g.save(os.path.join(splash_folder, "crispy_bills_glyph.png"))
+print("wrote", os.path.join(splash_folder, "crispy_bills_glyph.png"))
+
 # ========== Android adaptive icon SVGs for Crispy_Bills ==========
 from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
@@ -176,10 +189,7 @@ fg = (
 bg = (
     '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
     '<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">\n'
-    '<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">'
-    f'<stop offset="0" stop-color="#{BG_TOP[0]:02X}{BG_TOP[1]:02X}{BG_TOP[2]:02X}"/>'
-    f'<stop offset="1" stop-color="#{BG_BOT[0]:02X}{BG_BOT[1]:02X}{BG_BOT[2]:02X}"/>'
-    '</linearGradient></defs>\n<rect width="1024" height="1024" fill="url(#bg)"/>\n</svg>\n'
+    '<rect width="1024" height="1024" fill="#1B1E33"/>\n</svg>\n'
 )
 sq_folder = os.path.join(OUT, "Crispy_Bills")
 for fname, content in (("appicon.svg", bg), ("appiconfg.svg", fg)):
