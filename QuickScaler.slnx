@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="QuickScaler.csproj" />
+  <Project Path="QuickScaler.Tests/QuickScaler.Tests.csproj" />
+</Solution>

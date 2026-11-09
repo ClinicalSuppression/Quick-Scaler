@@ -1,7 +1,7 @@
 // Dependency-free test harness: each Check() throws on failure; Main returns non-zero.
-// Run with: dotnet run --project WindowsQuickScaler.Tests -c Release
+// Run with: dotnet run --project QuickScaler.Tests -c Release
 using System.IO;
-using WindowsQuickScaler;
+using QuickScaler;
 
 int passed = 0;
 int failed = 0;

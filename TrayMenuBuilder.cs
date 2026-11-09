@@ -1,4 +1,4 @@
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>
     /// Pure description of the tray menu order, so the ordering logic can be unit-tested

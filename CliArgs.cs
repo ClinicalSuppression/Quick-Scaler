@@ -1,4 +1,4 @@
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>Parsed command-line options. See README for the full list.</summary>
     public sealed class CliOptions
@@ -23,8 +23,8 @@ namespace WindowsQuickScaler
     public static class CliArgs
     {
         public const string HelpText =
-            "Windows Quick Scaler\n" +
-            "Usage: WindowsQuickScaler.exe [options]\n" +
+            "Quick Scaler\n" +
+            "Usage: QuickScaler.exe [options]\n" +
             "\n" +
             "  (no options)                 Open the dashboard\n" +
             "  --tray                       Start minimized to the system tray\n" +

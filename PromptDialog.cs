@@ -8,7 +8,7 @@ using Color = System.Windows.Media.Color;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Orientation = System.Windows.Controls.Orientation;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>Simple text-input dialog used for renaming presets and similar prompts.</summary>
     public sealed class PromptDialog : Window
@@ -55,7 +55,7 @@ namespace WindowsQuickScaler
 
         public FirstRunWindow(int monitorCount, string currentSummary)
         {
-            Title = "Welcome to Windows Quick Scaler";
+            Title = "Welcome to Quick Scaler";
             Width = 520;
             SizeToContent = SizeToContent.Height;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;

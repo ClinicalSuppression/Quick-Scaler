@@ -2,11 +2,11 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Version>1.1</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <InformationalVersion>1.1</InformationalVersion>
-    <ApplicationIcon>Assets\WindowsQuickScaler.ico</ApplicationIcon>
+    <Version>1.2</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <InformationalVersion>1.2</InformationalVersion>
+    <ApplicationIcon>Assets\QuickScaler.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <UseWpf>true</UseWpf>
@@ -17,7 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- The test harness lives in a subfolder but must not compile into the app. -->
-    <Compile Remove="WindowsQuickScaler.Tests\**\*.cs" />
-    <None Remove="WindowsQuickScaler.Tests\**\*" />
+    <Compile Remove="QuickScaler.Tests\**\*.cs" />
+    <None Remove="QuickScaler.Tests\**\*" />
   </ItemGroup>
 </Project>

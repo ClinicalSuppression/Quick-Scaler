@@ -9,7 +9,7 @@ artifacts/
 *.userosscache
 *.sln.docstates
 *.tmp
-WindowsQuickScaler_Setup_*.exe
+QuickScaler_Setup_*.exe
 Output/
 TestResults/
 *.log

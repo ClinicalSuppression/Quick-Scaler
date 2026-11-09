@@ -1,3 +1,5 @@
+> **Historical document.** The app was renamed to **Quick Scaler** in v1.2 (repo `ClinicalSuppression/QuickScaler`, project `QuickScaler.csproj`, exe `QuickScaler.exe`, data folder `%LOCALAPPDATA%\QuickScaler`). Names below refer to the pre-1.2 codebase and are kept for accuracy.
+
 # WindowsQuickScaler — Audit & Improvement Plan
 
 **Goal:** easily change Windows display scaling to stay usable whether sitting at a desk or on a couch ~10 feet away.

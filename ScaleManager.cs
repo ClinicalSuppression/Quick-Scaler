@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>
     /// Live scaling information for one active display, as reported by Windows.

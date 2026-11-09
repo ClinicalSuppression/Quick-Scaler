@@ -16,7 +16,7 @@ using Forms = System.Windows.Forms;
 using Draw = System.Drawing;
 using Microsoft.Win32;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>
     /// Dashboard for selecting displays, managing scaling presets, and applying display scaling.
@@ -133,7 +133,7 @@ namespace WindowsQuickScaler
             {
                 Icon = trayAppIcon,
                 Visible = true,
-                Text = "Windows Quick Scaler"
+                Text = "Quick Scaler"
             };
 
             trayContextMenu = new Forms.ContextMenuStrip();
@@ -1138,7 +1138,7 @@ namespace WindowsQuickScaler
             try
             {
                 using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", writable: false);
-                return key?.GetValue("WindowsQuickScaler") is not null;
+                return key?.GetValue("QuickScaler") is not null;
             }
             catch
             {
@@ -1159,11 +1159,11 @@ namespace WindowsQuickScaler
                 {
                     string executablePath = Environment.ProcessPath
                         ?? throw new InvalidOperationException("The application executable path could not be determined.");
-                    key.SetValue("WindowsQuickScaler", $"\"{executablePath}\" --tray");
+                    key.SetValue("QuickScaler", $"\"{executablePath}\" --tray");
                 }
                 else
                 {
-                    key.DeleteValue("WindowsQuickScaler", false);
+                    key.DeleteValue("QuickScaler", false);
                 }
             }
             catch (Exception ex)
@@ -1437,7 +1437,7 @@ namespace WindowsQuickScaler
                         using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", writable: true)
                             ?? throw new InvalidOperationException("Startup settings could not be opened.");
                         string executablePath = Environment.ProcessPath ?? "";
-                        key.SetValue("WindowsQuickScaler", $"\"{executablePath}\" --tray");
+                        key.SetValue("QuickScaler", $"\"{executablePath}\" --tray");
                     }
                     catch
                     {
@@ -1460,7 +1460,7 @@ namespace WindowsQuickScaler
             {
                 e.Cancel = true;
                 Hide();
-                trayIcon.ShowBalloonTip(3000, "Windows Quick Scaler", "Minimized to tray. Right-click the tray icon for presets, or use Ctrl+Alt+D / Ctrl+Alt+C.", Forms.ToolTipIcon.Info);
+                trayIcon.ShowBalloonTip(3000, "Quick Scaler", "Minimized to tray. Right-click the tray icon for presets, or use Ctrl+Alt+D / Ctrl+Alt+C.", Forms.ToolTipIcon.Info);
             }
         }
 

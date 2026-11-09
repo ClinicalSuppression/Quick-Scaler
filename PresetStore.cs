@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>
     /// A named scaling action and the displays to which it applies.
@@ -38,7 +38,7 @@ namespace WindowsQuickScaler
 
         private static readonly string DefaultPresetFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "WindowsQuickScaler",
+            "QuickScaler",
             "presets.json");
 
         /// <summary>Override used by tests. When null, the real per-user path is used.</summary>

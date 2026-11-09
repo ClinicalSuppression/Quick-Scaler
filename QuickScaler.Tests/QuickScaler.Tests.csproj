@@ -6,9 +6,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>WindowsQuickScaler.Tests</AssemblyName>
+    <AssemblyName>QuickScaler.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WindowsQuickScaler.csproj" />
+    <ProjectReference Include="..\QuickScaler.csproj" />
   </ItemGroup>
 </Project>

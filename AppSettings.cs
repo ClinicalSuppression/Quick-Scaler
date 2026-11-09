@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>User preferences persisted next to presets.json.</summary>
     public sealed class AppSettings
@@ -24,7 +24,7 @@ namespace WindowsQuickScaler
     {
         private static readonly string DefaultPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "WindowsQuickScaler",
+            "QuickScaler",
             "settings.json");
 
         internal static string? SettingsFilePathOverride { get; set; }

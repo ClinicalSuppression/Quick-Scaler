@@ -1,7 +1,7 @@
-<Window x:Class="WindowsQuickScaler.MainWindow"
+<Window x:Class="QuickScaler.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Windows Quick Scaler" Height="640" Width="980" MinHeight="540" MinWidth="840"
+        Title="Quick Scaler" Height="640" Width="980" MinHeight="540" MinWidth="840"
         WindowStartupLocation="CenterScreen" Background="#F4F4F4" FontSize="13"
         Closing="Window_Closing">
     <DockPanel Margin="12">

@@ -7,7 +7,7 @@ using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using Orientation = System.Windows.Controls.Orientation;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     /// <summary>
     /// A small bottom-right notification that never steals focus, with an optional

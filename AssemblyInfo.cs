@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("WindowsQuickScaler.Tests")]
+[assembly: InternalsVisibleTo("QuickScaler.Tests")]

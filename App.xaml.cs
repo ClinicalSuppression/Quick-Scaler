@@ -4,7 +4,7 @@ using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
 using MessageBoxImage = System.Windows.MessageBoxImage;
 
-namespace WindowsQuickScaler
+namespace QuickScaler
 {
     public partial class App : System.Windows.Application
     {
@@ -20,8 +20,8 @@ namespace WindowsQuickScaler
                 args.Handled = true;
                 LogError(args.Exception);
                 MessageBox.Show(
-                    $"Something went wrong, but the app kept running.\n\n{args.Exception.Message}\n\nDetails were written to the log in %LOCALAPPDATA%\\WindowsQuickScaler\\app.log.",
-                    "Windows Quick Scaler",
+                    $"Something went wrong, but the app kept running.\n\n{args.Exception.Message}\n\nDetails were written to the log in %LOCALAPPDATA%\\QuickScaler\\app.log.",
+                    "Quick Scaler",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             };
@@ -32,13 +32,16 @@ namespace WindowsQuickScaler
                     LogError(ex);
             };
 
+            AppPaths.MigrateLegacyDataDirectory();
+            AppPaths.MigrateLegacyStartupEntry();
+
             CliOptions options = CliArgs.Parse(e.Args);
 
             if (options.Help)
             {
                 MessageBox.Show(
                     CliArgs.HelpText,
-                    "Windows Quick Scaler — help",
+                    "Quick Scaler — help",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 Shutdown();
@@ -47,7 +50,7 @@ namespace WindowsQuickScaler
 
             // Single instance. A named mutex is released automatically if the process dies,
             // so a crash never leaves a stale lock behind.
-            singleInstanceMutex = new Mutex(initiallyOwned: false, @"Local\WindowsQuickScaler.SingleInstance");
+            singleInstanceMutex = new Mutex(initiallyOwned: false, @"Local\QuickScaler.SingleInstance");
             try
             {
                 ownsMutex = singleInstanceMutex.WaitOne(TimeSpan.Zero);
@@ -60,8 +63,8 @@ namespace WindowsQuickScaler
             if (!ownsMutex)
             {
                 MessageBox.Show(
-                    "Windows Quick Scaler is already running. Look for its icon in the system tray (click the ^ arrow if hidden).",
-                    "Windows Quick Scaler",
+                    "Quick Scaler is already running. Look for its icon in the system tray (click the ^ arrow if hidden).",
+                    "Quick Scaler",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 Shutdown();
@@ -95,7 +98,7 @@ namespace WindowsQuickScaler
             {
                 string directory = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "WindowsQuickScaler");
+                    "QuickScaler");
                 Directory.CreateDirectory(directory);
                 string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {exception}{Environment.NewLine}";
                 File.AppendAllText(Path.Combine(directory, "app.log"), line);
