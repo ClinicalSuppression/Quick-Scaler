@@ -153,27 +153,33 @@ print("wrote", os.path.join(splash_folder, "crispy_bills_glyph.png"))
 from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 
-def glyph_path_d(font, ch):
-    cmap = font.getBestCmap()
+def glyph_path_d(font, ch, matrix):
+    from fontTools.pens.transformPen import TransformPen
     glyphset = font.getGlyphSet()
+    cmap = font.getBestCmap()
     name = cmap[ord(ch)]
     pen = SVGPathPen(glyphset)
-    glyphset[name].draw(pen)
+    glyphset[name].draw(TransformPen(pen, matrix))
     return pen.getCommands(), font["hmtx"][name][0]
 
 font = TTFont(ARIBLK)
 upem = font["head"].unitsPerEm
-d_c, w_c = glyph_path_d(font, "C")
-d_b, w_b = glyph_path_d(font, "B")
 scale = 300.0 / upem
-gap = 40 * scale / 1  # gap in em-scaled px (font 300px)
+from fontTools.misc.transform import Transform
+
+# preliminary pass to measure advances at the target scale
+d_c, w_c = glyph_path_d(font, "C", Transform(scale, 0, 0, -scale, 0, 0))
+d_b, w_b = glyph_path_d(font, "B", Transform(scale, 0, 0, -scale, 0, 0))
 total = (w_c + w_b) * scale + 60
 x0 = 512 - total / 2
-# SVG y axis is inverted vs font space: flip with scale(s, -s) and set baseline
-svg_letters = []
-for d, w, x in ((d_c, w_c, x0), (d_b, w_b, x0 + w_c * scale + 60)):
-    svg_letters.append(
-        f'<path transform="translate({x:.1f},505) scale({scale:.5f},{-scale:.5f})" d="{d}" fill="#E2E8F4"/>')
+baseline_y = 505
+# bake translate+flip into the path coordinates so the SVG needs no transform attribute
+d_c, _ = glyph_path_d(font, "C", Transform(scale, 0, 0, -scale, x0, baseline_y))
+d_b, _ = glyph_path_d(font, "B", Transform(scale, 0, 0, -scale, x0 + w_c * scale + 60, baseline_y))
+svg_letters = [
+    f'<path d="{d_c}" fill="#E2E8F4"/>',
+    f'<path d="{d_b}" fill="#E2E8F4"/>',
+]
 fg_banknote = (
     '<rect x="322" y="580" width="380" height="150" rx="22" fill="#E2E8F4"/>'
     '<circle cx="512" cy="655" r="52" fill="#181C30"/>'
