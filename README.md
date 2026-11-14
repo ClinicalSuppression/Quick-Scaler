@@ -129,6 +129,27 @@ The installer packages the x64 publish output, uses the app icon from `Assets\Qu
 - If a hotkey doesn't work, another app may already use that combination; the app registers Desk/Couch/step hotkeys independently and reports conflicts in the status bar.
 - If an extreme scale leaves the screen hard to read, use the 15-second **Revert** (or sign out/in as a last resort).
 
+## Installation
+
+### Terminal / CLI (Source)
+
+Clone the repository and build the app from source:
+
+```powershell
+git clone https://github.com/ClinicalSuppression/Quick-Scaler.git
+cd Quick-Scaler
+dotnet restore .\QuickScaler.slnx
+dotnet build .\QuickScaler.slnx -c Release -warnaserror
+```
+
+### Windows Installer
+
+Download the latest installer (`QuickScaler_Setup_X.Y.exe`) from the [Releases](https://github.com/ClinicalSuppression/Quick-Scaler/releases) page and run it to install Quick Scaler on your machine.
+
+### Portable
+
+Download the latest portable build (if available) from the [Releases](https://github.com/ClinicalSuppression/Quick-Scaler/releases) page and run the executable directly without installation.
+
 ## License
 
 Quick Scaler is distributed under the [PolyForm Noncommercial License 1.0.0](./LICENSE), copyright (c) 2026 ClinicalSuppression.
