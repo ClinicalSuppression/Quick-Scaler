@@ -6,7 +6,7 @@
 
 ## 2. Standardized Release Assets
 Every major stable release must include:
-- **Source Zip**: A normalized source archive (`<repo-name>-vX.Y.Z.zip`).
+- **Source Zip**: A normalized source archive (`<repo-name>-vX.Y.Z-src.zip`).
 - **Terminal Installation Instructions**: Clear instructions in `README.md` for terminal/CLI installation (e.g., `git clone` into plugin directories).
 - **Executables (`.exe`)**: If the app compiles or builds an `.exe`, include both:
   1. A portable executable package.
